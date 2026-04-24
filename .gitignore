@@ -5,37 +5,26 @@
 Icon?
 ._*
 
-# Thumbnails
-._.DS_Store
+# Windows thumbnails
 Thumbs.db
 
-# Python cache and compiled files
+# Python cache
 __pycache__/
 *.py[cod]
-*.pyo
-*.pyd
 
-
-# Build artifacts
+# Build artifacts (C)
 c/build/
 c/bin/
 c/lib/
 data_gen/build/
 
-# Build artifacts placed in dist should be ignored
-.devcontainer
-.gitignore
-env.sh
-Makefile
-.gitlab-ci.yml
+# Ignore everything in dist EXCEPT required shared libs
 dist/*
-# Allow the prebuilt shared libraries including the folder itself
 !dist/
 !dist/libpuzzlegen-linux-amd64.so
 !dist/libpuzzlegen-linux-arm64.so
 
-
-# Test artifacts
+# Logs / temp
 *.log
 *.out
 *.tmp
@@ -46,16 +35,11 @@ env/
 .venv/
 .env/
 
-# IDE/editor configs
+# IDE configs
 .vscode/
 .idea/
 *.swp
 *.swo
-
-# GitLab CI token-based clone URLs (just in case)
-*.token
-
-
 
 # Temporary files
 *.bak
