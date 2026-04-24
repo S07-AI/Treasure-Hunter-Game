@@ -1,86 +1,89 @@
-# Treasure Hunter Game
+<h1 align="center">Treasure Hunter Game</h1>
+
+<p align="center">
+  A puzzle-based game built with a C backend and a Python interface
+</p>
+
+---
 
 ## Overview
-Treasure Hunter is a full-stack puzzle-based game that combines a C backend with a Python frontend. The game generates and solves treasure-hunting puzzles while allowing user interaction through a command-line interface.
 
----
-
-## Why I Built This
-This project was developed to explore:
-- Interfacing Python with C shared libraries
-- Building modular backend logic in C
-- Designing a dynamic puzzle-based game
-
----
-
-## Tech Stack
-- **C** – Core game logic
-- **Python** – Game interface
-- **Makefile** – Build automation
-- **Shared Libraries (.so)** – Backend integration
+Treasure Hunter is a puzzle-based game that generates maps and challenges players to locate hidden treasure.  
+The project integrates a low-level C backend with a Python frontend, demonstrating cross-language interaction and modular system design.
 
 ---
 
 ## Features
-- Procedurally generated puzzles
-- Python ↔ C integration
-- Modular architecture
-- Configurable settings via `.ini` and JSON files
+
+- Procedurally generated puzzle maps  
+- Integration between Python and compiled C libraries  
+- Modular separation between game logic and interface  
+- Configurable settings via `.ini` and JSON files  
+- Automated build process using Make  
 
 ---
 
 ## Project Structure
+
 ```bash
 A3-main/
-│── c/              # C backend
-│── python/         # Game interface
-│── assets/         # Config files
-│── dist/           # Compiled libraries
+│── c/              # Core game logic (C)
+│── python/         # Game interface (Python)
+│── assets/         # Configuration and data files
+│── dist/           # Compiled shared libraries
 │── Makefile
 │── env.sh
+│── README.md
 ```
 
 ---
 
-## How to Run
+## Getting Started
 
-### 1. Setup
+### 1. Set up environment
+
 ```bash
 source env.sh
 ```
 
-### 2. Build
+### 2. Build the project
+
 ```bash
 make
 ```
 
-### 3. Run
+### 3. Run the game
+
 ```bash
 python3 python/run_game.py
 ```
 
 ---
 
-## Key Concepts
-- Cross-language integration (C + Python)
-- Memory management in C
-- Build systems using Makefiles
-- Modular design
+## Technical Highlights
+
+- Cross-language integration between C and Python  
+- Memory management and modular design in C  
+- Build automation using Makefiles  
+- Separation of concerns between backend and interface  
 
 ---
 
 ## Notes
-- `.so` files in `/dist` are required compiled libraries
-- Can be rebuilt using `make`
+
+- The shared libraries in `dist/` are required to run the game  
+- These can be rebuilt using the provided Makefile  
 
 ---
 
-## Future Improvements
-- Add GUI
-- Improve puzzle difficulty
-- Add leaderboard
+## Future Work
+
+- Add a graphical interface  
+- Improve puzzle complexity and scaling  
+- Introduce persistent scoring or leaderboard functionality  
 
 ---
 
 ## Author
+
 Shayan Safaei
