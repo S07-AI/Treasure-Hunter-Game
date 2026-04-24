@@ -1,46 +1,61 @@
-# macOS system files
+# ========================
+# System files
+# ========================
 .DS_Store
+Thumbs.db
 .AppleDouble
 .LSOverride
 Icon?
 ._*
 
-# Windows thumbnails
-Thumbs.db
-
+# ========================
 # Python cache
+# ========================
 __pycache__/
 *.py[cod]
 
+# ========================
 # Build artifacts (C)
+# ========================
 c/build/
 c/bin/
 c/lib/
 data_gen/build/
 
-# Ignore everything in dist EXCEPT required shared libs
-dist/*
-!dist/
-!dist/libpuzzlegen-linux-amd64.so
-!dist/libpuzzlegen-linux-arm64.so
-
-# Logs / temp
+# ========================
+# Logs / temp files
+# ========================
 *.log
 *.out
 *.tmp
+*.bak
+*.orig
 
+# ========================
 # Virtual environments
+# ========================
 venv/
 env/
 .venv/
 .env/
 
-# IDE configs
+# ========================
+# IDE / editor configs
+# ========================
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# Temporary files
-*.bak
-*.orig
+# ========================
+# dist folder (compiled libs)
+# ========================
+# Ignore everything in dist
+dist/*
+
+# BUT keep the folder + required shared libs
+!dist/
+!dist/libpuzzlegen-linux-amd64.so
+!dist/libpuzzlegen-linux-arm64.so
+
+.gitignore
