@@ -1,89 +1,202 @@
-<h1 align="center">Treasure Hunter Game</h1>
+# Treasure Runner — CIS*2750 A3
 
-<p align="center">
-  A puzzle-based game built with a C backend and a Python interface
-</p>
-
----
-
-## Overview
-
-Treasure Hunter is a puzzle-based game that generates maps and challenges players to locate hidden treasure.  
-The project integrates a low-level C backend with a Python frontend, demonstrating cross-language interaction and modular system design.
-
----
-
-## Features
-
-- Procedurally generated puzzle maps  
-- Integration between Python and compiled C libraries  
-- Modular separation between game logic and interface  
-- Configurable settings via `.ini` and JSON files  
-- Automated build process using Make  
+A terminal-based dungeon exploration game built with a C backend and a Python frontend. The C layer compiles to a shared library (`libbackend.so`) that is loaded at runtime by Python via `ctypes`, keeping game logic entirely in C while the UI and scripting live in Python.
 
 ---
 
 ## Project Structure
 
-```bash
+```
 A3-main/
-│── c/              # Core game logic (C)
-│── python/         # Game interface (Python)
-│── assets/         # Configuration and data files
-│── dist/           # Compiled shared libraries
-│── Makefile
-│── env.sh
-│── README.md
+├── assets/
+│   ├── default_profile.json    # Default player profile
+│   └── starter.ini             # World generation config
+├── c/
+│   ├── include/                # Public C headers
+│   │   ├── game_engine.h
+│   │   ├── graph.h
+│   │   ├── player.h
+│   │   ├── room.h
+│   │   ├── types.h
+│   │   ├── world_loader.h
+│   │   └── datagen.h
+│   ├── src/                    # C implementation
+│   │   ├── game_engine.c
+│   │   ├── graph.c
+│   │   ├── player.c
+│   │   ├── room.c
+│   │   └── world_loader.c
+│   ├── tests/                  # C unit tests (Check framework)
+│   └── tools/                  # Standalone demo tools
+├── dist/                       # Pre-built libpuzzlegen binaries + built libbackend.so
+├── python/
+│   ├── run_game.py             # Interactive game entry point
+│   ├── run_integration.py      # Deterministic integration test runner
+│   ├── treasure_runner/
+│   │   ├── bindings/           # ctypes bindings to libbackend.so
+│   │   ├── models/             # Python-side game engine, player, exceptions
+│   │   └── ui/                 # curses-based terminal UI
+│   └── tests/                  # Python test suite
+├── env.sh                      # Environment setup script
+└── Makefile                    # Root build entry point
 ```
 
 ---
 
-## Getting Started
+## Architecture
 
-### 1. Set up environment
+```
+Python UI (curses)
+      │
+Python Models (game_engine.py, player.py)
+      │
+ctypes Bindings (bindings.py)
+      │
+libbackend.so  ──── libpuzzlegen.so
+ (C source)         (pre-built, world generation)
+```
+
+The C layer owns all game state: the room graph, player position, treasures, switches, and pushable objects. Python receives an opaque pointer to the `GameEngine` struct and interacts only through the public C API.
+
+---
+
+## Requirements
+
+- GCC, Make
+- `pkg-config` + [Check](https://libcheck.github.io/check/) (for C unit tests)
+- Python 3.10+
+- A terminal that supports curses (Linux / macOS / devcontainer)
+
+The recommended dev environment is the provided devcontainer (`socsguelph/cis2750:w26`), which has all dependencies pre-installed.
+
+---
+
+## Building
+
+**Set up the environment first:**
 
 ```bash
 source env.sh
 ```
 
-### 2. Build the project
+This exports `TREASURE_RUNNER_ASSETS`, `LD_LIBRARY_PATH` (pointing at `dist/`), and `PYTHONPATH` (pointing at `python/`).
+
+**Build the C shared library:**
 
 ```bash
-make
+make backend       # compiles libbackend.so into c/lib/
 ```
 
-### 3. Run the game
+**Build and copy everything to `dist/`:**
 
 ```bash
-python3 python/run_game.py
+make dist          # runs setup-lib + backend, copies libbackend.so to dist/
+```
+
+**Clean build artifacts:**
+
+```bash
+make clean
+```
+
+> `make dist` auto-detects your architecture (`amd64` / `arm64`) and selects the correct pre-built `libpuzzlegen` binary.
+
+---
+
+## Running the Game
+
+```bash
+cd python
+python run_game.py --config ../assets/starter.ini --profile ../assets/default_profile.json
+```
+
+| Flag | Description |
+|---|---|
+| `--config` | Path to a world `.ini` config file |
+| `--profile` | Path to a player profile JSON (created automatically if missing) |
+
+### Controls
+
+| Key | Action |
+|---|---|
+| Arrow keys / WASD | Move player |
+| `>` | Enter portal |
+| `r` | Reset to start |
+| `q` | Quit |
+
+---
+
+## World Configuration
+
+Edit `assets/starter.ini` to customise the generated world:
+
+```ini
+seed=15               # Deterministic generation seed
+
+[world]
+num_rooms=3
+
+[room]
+width=20
+height=15
+width_variance=2
+height_variance=2
+
+[portals]
+portals_per_room=3
+connectivity_chance=30
+
+[treasures]
+treasures_per_room=3
+
+[pushables]
+pushables_per_room=2
+
+[switches]
+enabled=true
 ```
 
 ---
 
-## Technical Highlights
+## Testing
 
-- Cross-language integration between C and Python  
-- Memory management and modular design in C  
-- Build automation using Makefiles  
-- Separation of concerns between backend and interface  
+**C unit tests** (requires Check):
+
+```bash
+cd c
+make test
+```
+
+**Python tests:**
+
+```bash
+cd python
+python -m pytest tests/
+```
+
+**Integration test runner** (deterministic replay):
+
+```bash
+cd python
+python run_integration.py --config ../assets/starter.ini
+```
 
 ---
 
-## Notes
+## Map Legend
 
-- The shared libraries in `dist/` are required to run the game  
-- These can be rebuilt using the provided Makefile  
+| Symbol | Meaning |
+|---|---|
+| `@` | Player |
+| `#` | Wall |
+| `.` | Floor |
+| `$` | Treasure |
+| `X` | Portal |
+| `O` | Pushable block |
+| `^` | Switch (off) |
+| `+` | Switch (on) |
+| `L` | Locked cell |
 
----
 
-## Future Work
-
-- Add a graphical interface  
-- Improve puzzle complexity and scaling  
-- Introduce persistent scoring or leaderboard functionality  
-
----
-
-## Author
-
+# AUTHOR
 Shayan Safaei
