@@ -23,6 +23,8 @@ c/lib/
 data_gen/build/
 
 # Build artifacts placed in dist should be ignored
+.devcontainer
+.gitignore
 env.sh
 Makefile
 .gitlab-ci.yml
